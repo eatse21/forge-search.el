@@ -12,6 +12,13 @@
                  (other :tag "last update" "updated"))
   :group 'forge)
 
+(defvar-keymap forge-search-mode-map
+  :doc "Local keymap for Forge Search buffers."
+  :parent magit-mode-map
+  "b"      #'forge-search-browse-at-point
+  "RET"      #'forge-search-visit-at-point
+  "<return>" #'forge-search-visit-at-point)
+
 (defun forge-search (search-string)
   "Perform a SQLite full text search of SEARCH-STRING in current repository’s
 issues and pull requests (with their replies)"
@@ -21,8 +28,8 @@ issues and pull requests (with their replies)"
               (repoid (slot-value repo 'id)))
     (emacsql-with-transaction db
       (emacsql db [:create-virtual-table :if :not :exists search
-		   :using :fts5
-		   ([id haystack author date type title body])])
+                   :using :fts5
+                   ([id haystack author date type title body])])
 
       ;; Is there a way to make those queries with Emacsql syntax?
       ;; Manual SQL query string building could be avoided
@@ -107,15 +114,6 @@ issues and pull requests (with their replies)"
             (magit-insert-heading heading)
             (insert body-rendered)))))))
 
-
-
-(defvar-keymap forge-search-mode-map
-  :doc "Local keymap for Forge Search buffers."
-  :parent magit-mode-map
-  "b"      #'forge-search-browse-at-point
-  "RET"      #'forge-search-visit-at-point
-  "<return>" #'forge-search-visit-at-point)
-
 (define-derived-mode forge-search-mode magit-mode "forge-search"
   "Major mode for Forge Search. Simple placeholder for now")
 
@@ -132,11 +130,9 @@ issues and pull requests (with their replies)"
 (defun forge-search-visit-at-point ()
 "View the issue/pull request under point"
   (interactive)
-  (forge--search-do-at-point 'forge-visit-issue 'forge-visit-pullreq)
-)
+  (forge--search-do-at-point 'forge-visit-issue 'forge-visit-pullreq))
 
 (defun forge-search-browse-at-point ()
 "View the issue/pull request under point with the browser"
   (interactive)
-  (forge--search-do-at-point 'forge-browse-issue 'forge-browse-pullreq)
-)
+  (forge--search-do-at-point 'forge-browse-issue 'forge-browse-pullreq))
