@@ -136,3 +136,5 @@ issues and pull requests (with their replies)"
 "View the issue/pull request under point with the browser"
   (interactive)
   (forge--search-do-at-point 'forge-browse-issue 'forge-browse-pullreq))
+
+(provide 'forge-search)
