@@ -24,12 +24,12 @@
 issues and pull requests (with their replies)"
   (interactive "sSearch in repository: ")
   (when-let* ((db (forge-db))
-              (repo (forge-get-repository 'full))
+              (repo (forge-get-repository :tracked?))
               (repoid (slot-value repo 'id)))
     (emacsql-with-transaction db
       (emacsql db [:create-virtual-table :if :not :exists search
-                   :using :fts5
-                   ([id haystack author date type title body])])
+					 :using :fts5
+					 ([id haystack author date type title body])])
 
       ;; Is there a way to make those queries with Emacsql syntax?
       ;; Manual SQL query string building could be avoided
@@ -76,8 +76,8 @@ issues and pull requests (with their replies)"
       (let* ((matches
               ;; haystack contains both post's title and body
               (emacsql db [:select [id author date type title body]
-                           :from search
-                           :where haystack :match $r1]
+				   :from search
+				   :where haystack :match $r1]
                        search-string))
              (magit-generate-buffer-name-function (lambda (_mode _value) (format "*Forge Search Results*" search-string))))
         (if matches
