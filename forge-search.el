@@ -19,6 +19,7 @@
   "RET"      #'forge-search-visit-at-point
   "<return>" #'forge-search-visit-at-point)
 
+;;;###autoload
 (defun forge-search (search-string)
   "Perform a SQLite full text search of SEARCH-STRING in current repository’s
 issues and pull requests (with their replies)"
